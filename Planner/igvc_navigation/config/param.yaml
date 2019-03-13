@@ -1,0 +1,135 @@
+
+controller_frequency: 5.0
+recovery_behaviour_enabled: true
+
+NavfnROS:
+  allow_unknown: true # Specifies whether or not to allow navfn to create plans that traverse unknown space.
+  default_tolerance: 0.1 # A tolerance on the goal point for the planner.
+
+DWAPlannerROS:
+  # Robot configuration parameters  
+  acc_lim_x: 0.2
+  acc_lim_y: 0
+  acc_lim_th: 0.4
+
+  odom_topic: /odometry/filtered
+  map_frame: /map
+
+  max_vel_x: 0.2
+  min_vel_x: 0.0
+  max_vel_y: 0
+  min_vel_y: 0
+
+  max_trans_vel: 0.4
+  min_trans_vel: 0.0
+  max_rot_vel: 0.4
+  min_rot_vel: 0.0
+
+  # Goal Tolerance Parameters
+  yaw_goal_tolerance: 0.2
+  xy_goal_tolerance: 0.2
+  latch_xy_goal_tolerance: false
+
+  # Forward Simulation Parameters
+  sim_time: 2.0
+  sim_granularity: 0.02
+  vx_samples: 6
+  vy_samples: 0
+  vtheta_samples: 20
+  penalize_negative_x: true
+
+  # Trajectory scoring parameters
+  # path_distance_bias: 32.0 # The weighting for how much the controller should stay close to the path it was given
+  # goal_distance_bias: 24.0 # The weighting for how much the controller should attempt to reach its local goal, also controls speed
+  # occdist_scale: 0.01 # The weighting for how much the controller should attempt to avoid obstacles
+  # forward_point_distance: 0.325 # The distance from the center point of the robot to place an additional scoring point, in meters
+  # stop_time_buffer: 0.2  # The amount of time that the robot must stThe absolute value of the veolicty at which to start scaling the robot's footprint, in m/sop before a collision in order for a trajectory to be considered valid in seconds
+  # scaling_speed: 0.25 # The absolute value of the veolicty at which to start scaling the robot's footprint, in m/s
+  # max_scaling_factor: 0.2 # The maximum factor to scale the robot's footprint by
+
+  # # Oscillation Prevention Parameters
+  # oscillation_reset_dist: 0.25 #How far the robot must travel in meters before oscillation flags are reset (double, default: 0.05)
+
+TebLocalPlannerROS:
+
+ odom_topic: /odometry/filtered
+ map_frame: /map
+    
+ # Trajectory
+  
+ teb_autosize: True
+ dt_ref: 0.3
+ dt_hysteresis: 0.03
+ global_plan_overwrite_orientation: True
+ global_plan_viapoint_sep: -0.1                   # Important, see its effect. 
+ max_global_plan_lookahead_dist: 2              # maximum length of subset of trajectory considered for optimisation, default is 3 
+ feasibility_check_no_poses: 5                   # default is 5
+    
+ # Robot
+         
+ max_vel_x: 0.4
+ max_vel_x_backwards: 0.2
+ max_vel_theta: 0.5
+ acc_lim_x: 0.4
+ acc_lim_theta: 0.4
+ min_turning_radius: 10.0
+
+ footprint_model: # types: "point", "circular", "two_circles", "line", "polygon"
+   type: "line"
+   radius: 0.5 # for type "circular"
+   line_start: [0.0, 0.0] # for type "line"
+   line_end: [-0.8, 0.0] # for type "line"
+   front_offset: 0.2 # for type "two_circles"
+   front_radius: 0.2 # for type "two_circles"
+   rear_offset: 0.2 # for type "two_circles"
+   rear_radius: 0.2 # for type "two_circles"
+   vertices: [ [0.45, -0.25], [0.45, 0.25], [-0.45, 0.25], [-0.45, -0.25] ] # for type "polygon"
+
+ # GoalTolerance
+    
+ xy_goal_tolerance: 0.4
+ yaw_goal_tolerance: 0.2
+ free_goal_vel: false
+    
+ # Obstacles
+    
+ min_obstacle_dist: 0.4
+ include_costmap_obstacles: True
+ costmap_obstacles_behind_robot_dist: 1.0
+ obstacle_poses_affected: 20
+ costmap_converter_plugin: ""
+ costmap_converter_spin_thread: True
+ costmap_converter_rate: 5
+
+
+ # Optimization
+    
+ no_inner_iterations: 5
+ no_outer_iterations: 4
+ optimization_activate: True
+ optimization_verbose: False
+ penalty_epsilon: 0.3                     #it might be useful 
+ weight_max_vel_x: 2                    #increasing this parameter will increase the tendency to maintain max_vel 
+ weight_acc_lim_x: 1.2
+ weight_acc_lim_theta: 1.25
+ weight_kinematics_nh: 1000                  #see its
+ weight_kinematics_forward_drive: 1000
+ weight_kinematics_turning_radius: 50
+ weight_optimaltime: 9                   #if it increasses the time to reach goal decreases
+ weight_obstacle: 5
+ weight_dynamic_obstacle: 1 # not in use yet
+
+ # Homotopy Class Planner
+
+ enable_homotopy_class_planning: True
+ enable_multithreading: True
+ simple_exploration: False
+ max_number_classes: 1
+ roadmap_graph_no_samples: 15            
+ roadmap_graph_area_width: 5              
+ h_signature_prescaler: 1.0               #check while testing 
+ h_signature_threshold: 0.1
+ obstacle_keypoint_offset: 0.1
+ obstacle_heading_threshold: 0.0
+ visualize_hc_graph: False
+ selection_cost_hysteresis: 5
